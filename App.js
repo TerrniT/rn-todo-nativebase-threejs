@@ -3,17 +3,19 @@ import {
   Text,
   Link,
   HStack,
-  Center,
   Heading,
-  Switch,
   useColorMode,
   NativeBaseProvider,
   extendTheme,
-  VStack,
   Box,
+  IconButton,
+  useColorModeValue,
+  Flex,
+  Input,
+  Button,
 } from "native-base";
-import NativeBaseIcon from "./components/NativeBaseIcon";
-import { Platform } from "react-native";
+import Feather from '@expo/vector-icons/Feather';
+import { View } from "react-native"
 
 // Define the config
 const config = {
@@ -21,65 +23,96 @@ const config = {
   initialColorMode: "dark",
 };
 
+
 // extend the theme
 export const theme = extendTheme({ config });
 
 export default function App() {
+  const modes = useColorModeValue('purple.400', 'orange.300');
+  const scheme = useColorModeValue('purple', 'orange');
+
   return (
-    <NativeBaseProvider>
-      <Center
-        _dark={{ bg: "blueGray.900" }}
-        _light={{ bg: "blueGray.50" }}
-        px={4}
-        flex={1}
-      >
-        <VStack space={5} alignItems="center">
-          <NativeBaseIcon />
-          <Heading size="lg">Welcome to NativeBase</Heading>
-          <HStack space={2} alignItems="center">
-            <Text>Edit</Text>
-            <Box
-              _web={{
-                _text: {
-                  fontFamily: "monospace",
-                  fontSize: "sm",
-                },
-              }}
-              px={2}
-              py={1}
-              _dark={{ bg: "blueGray.800" }}
-              _light={{ bg: "blueGray.200" }}
-            >
-              App.js
-            </Box>
-            <Text>and save to reload.</Text>
-          </HStack>
-          <Link href="https://docs.nativebase.io" isExternal>
-            <Text color="primary.500" underline fontSize={"xl"}>
-              Learn NativeBase
-            </Text>
+    <NativeBaseProvider theme={theme}>
+      <Flex
+        _light={{ _text: { color: 'gray.800' }, bg: '#edf6f9' }}
+        _dark={{ _text: { color: 'whiteAlpha.900' }, bg: '#151515' }}
+        justifyContent="center"
+        alignItems="center"
+        width="100%"
+        height="100%"
+        fontSize="xl">
+        <ToggleDarkMode />
+        <Flex p={3} flexDirection="column" alignItems="center">
+
+          {/* <Scene /> */}
+
+          <Heading fontSize={34} fontWeight="700">
+            Todo
+          </Heading>
+          <Link
+            alignItems="center"
+            href="https://github.com/TerrniT"
+            isExternal
+          >
+            <Text fontSize={22} mr={2}>@terrnit</Text>
           </Link>
-          <ToggleDarkMode />
-        </VStack>
-      </Center>
-    </NativeBaseProvider>
+          <Flex alignSelf="center">
+            <Flex flexDir="column">
+              <Flex mt="10%">
+                <Input
+                  focusBorderColor={modes}
+                  placeholder="Add task"
+                />
+                <Button ml={5} bg={modes}>
+                  Add Task
+                </Button>
+              </Flex>
+            </Flex>
+          </Flex>
+        </Flex>
+      </Flex>
+    </NativeBaseProvider >
   );
+}
+
+
+const FaMoon = () => {
+  return (
+    <View >
+      <Feather name="moon" size={32} />
+    </View>
+  )
+}
+
+
+const FaSun = () => {
+  return (
+    <View >
+      <Feather name="sun" size={32} />
+    </View>
+  )
 }
 
 // Color Switch Component
 function ToggleDarkMode() {
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { toggleColorMode } = useColorMode();
+  const SwitchIcon = useColorModeValue(FaMoon, FaSun)
+  const text = useColorModeValue('dark', 'light');
+  const buttonBg = useColorModeValue('purple.400', 'orange.100');
+
   return (
     <HStack space={2} alignItems="center">
-      <Text>Dark</Text>
-      <Switch
-        isChecked={colorMode === "light"}
-        onToggle={toggleColorMode}
-        aria-label={
-          colorMode === "light" ? "switch to dark mode" : "switch to light mode"
-        }
+      <IconButton
+        size="md"
+        fontSize="lg"
+        aria-label={`Switch to ${text} mode`}
+        variant="ghost"
+        color="black"
+        bg={buttonBg}
+        marginLeft="2"
+        onPress={toggleColorMode}
+        icon={<SwitchIcon />}
       />
-      <Text>Light</Text>
     </HStack>
   );
 }
